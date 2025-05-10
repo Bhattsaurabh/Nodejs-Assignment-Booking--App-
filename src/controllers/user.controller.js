@@ -111,12 +111,12 @@ const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
 
     //checking  email is there or not
-    if (!(email)) {
+    if (!email) {
         throw new ApiError(400, "email is required")
     }
 
     // find user has a valid email by checking in mongoDB
-    const user = await User.findOne(email)
+    const user = await User.findOne({email : email})
 
     if (!user) {
         throw new ApiError(404, "user does not exists")
@@ -159,6 +159,34 @@ const loginUser = asyncHandler(async (req, res) => {
 // logout karne k liye user ko jo login pr tokens diye wo sb clear karne honge.
 // user ko logout karne k liye user ka access lena pdega tabhi toh accesstoken and refreshtoken hatayenge
 // issliye ye middleware ka use krk logout method par jane se pehle req mai req.user ko add krdenge jisme  access and refresh tokens honge.
+
+
+
+const logoutUser = asyncHandler(async (req, res) => {
+
+    await User.findByIdAndUpdate(req.user.id,
+        {
+            $unset: {
+                refreshToken: 1     //this remove the field from document
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(new ApiResponse(200, {}, "User logged out"))
+
+})
 
 
 
@@ -212,4 +240,4 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 
 
-export {registerUser}
+export {registerUser, loginUser, logoutUser, generateAccessandRefreshTokens, refreshAccessToken}

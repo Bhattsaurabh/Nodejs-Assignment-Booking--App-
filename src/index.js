@@ -11,6 +11,12 @@ dotenv.config({
 
 connectDB()
 .then( () =>{
+
+    app.get('/', (req, res) => {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    });
+
+
     app.listen(process.env.PORT || 8000, () =>  {
         console.log(` Server is running at port:
              ${process.env.PORT}`);

@@ -3,13 +3,11 @@ import mongoose from "mongoose";
 
 const activitySchema = new mongoose.Schema(
     {
-        id: {
+        eventId : {
             type: String,
             required: true,
             unique: true,
-            lowercase: true,
-            trim: true,
-            index: true
+            trim: true
         },
         title: {
             type: String,
@@ -28,7 +26,21 @@ const activitySchema = new mongoose.Schema(
             required: true,
             lowercase: true,
             trim: true,
-        }
+        },
+         date: {
+            type: String,
+            required: true,
+            lowercase: true,
+            trim: true,
+        },
+         time: {
+            type: String,
+            required: true,
+            lowercase: true,
+            trim: true,
+        },
+
+
     },
     
     {timestamps: true}
